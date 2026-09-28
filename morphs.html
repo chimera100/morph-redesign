@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+body {
+  color: #000000;
+  font-family: Arial;
+  background-color: #d9f6fa;
+  max-width: 400px;
+  margin: 0 auto;
+  margin-top: 100px;
+  place-items: center;
+}
+    </style>
+</head>
+<body>
+<h3 style="text-align:center"><span id="time">01:00</span></h3>
+<br>
+<p style="text-align:center">Transform the word below using the rule(s) provided each round; try to create a chain of 5 words before the timer runs out!
+</p>
+<p style="text-align:center">*Please turn caps lock on!
+</p>
+<form id="myForm">
+  <input type="text" id="nextword" required>
+</form>
+<br>
+<h1><div id="displayWord"></div></h1>
+<h3><div id="nextMorph"></div></h3>
+<br>
+<br>
+<p>Rules:</p>
+<p>~X = change X letter(s) from anywhere in the word</p>
+<p>+X = add X letter(s) from anywhere in the word</p>
+<p>-X = subtract X letter(s) from anywhere in the word</p>
+<script>
+    const morphs = ['ROUND 1: ~1', 'ROUND 2: +1 ~1', 'ROUND 3: ~2', 'ROUND 4: -1 ~1', 'ROUND 5: ~3'];
+    let round = 0;
+    const displayWord = document.getElementById('displayWord');
+    const morphPrompt = document.getElementById('nextMorph');
+    const startingWord = "START"
+    displayWord.textContent=startingWord;
+    morphPrompt.textContent=morphs[round];
+
+    const chain = [];
+    document.getElementById('myForm').addEventListener('submit', function(event){
+        event.preventDefault();
+        const inputWord = document.getElementById('nextword').value;
+
+        round++;
+
+        if (round < morphs.length) {
+            morphPrompt.textContent=morphs[round];
+            chain[round]=document.getElementById('nextword').value;
+            displayWord.textContent=inputWord;
+            document.getElementById('nextword').value='';
+        } else if (round == morphs.length) {
+            chain[morphs.length + 1]=document.getElementById('nextword').value;
+            displayWord.textContent="You morphed " + startingWord + " to " + chain[morphs.length + 1] + " in under a minute!";
+            morphPrompt.textContent=startingWord + " -> " + chain[1] + " -> "+chain[2]+" -> "+chain[3] + " -> "+chain[4] + " -> "+ chain[morphs.length + 1];
+        }
+    })
+    function startTimer(duration, display) {
+    var timer = duration, minutes, seconds;
+    setInterval(function () {
+        minutes = parseInt(timer / 60, 10);
+        seconds = parseInt(timer % 60, 10);
+
+        minutes = minutes < 10 ? "0" + minutes : minutes;
+        seconds = seconds < 10 ? "0" + seconds : seconds;
+
+        display.textContent = minutes + ":" + seconds;
+
+        if (--timer < 0) {
+            timer = 0;
+            clearInterval(timer);
+        }
+    }, 1000);
+}
+
+window.onload = function () {
+    var Minutes = 60 * 1,
+        display = document.getElementById('time');
+    startTimer(Minutes, display);
+};
+</script>
+
+</body>
+</html>
